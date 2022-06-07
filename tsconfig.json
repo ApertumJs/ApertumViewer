@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "module": "esnext",
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "allowJs": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "types": [
+      "@intlify/vite-plugin-vue-i18n/client"
+    ],
+  },
+  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

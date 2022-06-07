@@ -1,0 +1,26 @@
+{
+  "gallery-enter": "Enter",
+  "wall": "Wall",
+  "share-gallery": "Share Gallery",
+  "gallery-link": "Gallery link",
+  "copy": "Copy",
+  "iframe-insert": "Insert into a i-frame",
+  "embed-iframe": "Embed into another web",
+  "social": "Social",
+
+  "navigation": "Navigation",
+  
+  "navigation-desktop-line1":"<strong>Lateral movements:</strong> Click and drag with the mouse over the gallery.",
+  "navigation-desktop-line2":"<strong>Forward/Backward:</strong> Use the mouse wheel or the vertical arrows keys.",
+  "navigation-desktop-line3":"<strong>Turn:</strong> Use the horizontal arrows keys.",
+  "navigation-desktop-line4":"<strong>Change wall:</strong> Use the space bar or the buttons that appear when placing the mouse on the end of each wall.",
+  "navigation-desktop-line5":"<strong>Zoom details mode:</strong> Hold down the Control key while clicking with the mouse on the work. Use the mouse wheel to zoom and the upper button to exit",
+  "navigation-desktop-line6": "<strong>Start/stop the video:</strong>Hold down the Control key while clicking",
+
+  "navigation-mobile-line1":"<strong>Lateral movements:</strong> Drag a finger horizontally on the gallery." ,
+  "navigation-mobile-line2":"<strong>Forward/Backward:</strong> Zoom with two fingers (pinch) on the gallery.",
+  "navigation-mobile-line3": "<strong>Change wall:</strong> Use the buttons that will appearance when you touch with your finger at the end of each wall.",
+  "navigation-mobile-line4":"<strong>Artwork zoom mode:</strong> Press and hold an artwork until activate the zoom mode. Use your fingers to zoom and the upper button to exit",
+  "navigation-mobile-line5":"<strong>Show placard:</strong> Press an artwork until the placard appears.",
+  "navigation-mobile-line6": "<strong>Start/stop the video:</strong>Long press on the video"
+}

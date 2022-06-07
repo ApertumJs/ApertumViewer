@@ -1,0 +1,25 @@
+{
+  "gallery-enter": "Entrar",
+  "wall": "Pared",
+  "share-gallery": "Compartir galería",
+  "gallery-link": "Enlace a la galería",
+  "copy": "Copiar",
+  "embed-iframe": "Insertar en otra web",
+  "social": "Social",
+
+  "navigation": "Controles de navegación",
+
+  "navigation-desktop-line1":"<strong>Movimientos laterales:</strong> Pincha y arrastra con el ratón sobre la galería.",
+  "navigation-desktop-line2":"<strong>Avanzar/Retroceder:</strong> Usa la rueda del ratón o las flechas verticales del teclado.",
+  "navigation-desktop-line3":"<strong>Girar:</strong> Usa las flechas horizontales del teclado.",
+  "navigation-desktop-line4":"<strong>Cambiar de pared:</strong> Usa la barra espaciadora o los botones que aparecen al colocar el raton sobre el final de cada pared.",
+  "navigation-desktop-line5":"<strong>Ampliar obra:</strong> Mantén pulsada la tecla Control mientras haces clic con el ratón sobre la obra. Usa la rueda del ratón para hacer zoom y el  botón de la esquina superior derecha para salir.",
+  "navigation-desktop-line6": "<strong>Iniciar/detener un video:</strong> Mantén pulsada la tecla Control mientras haces clic sobre el video.",
+
+  "navigation-mobile-line1":"<strong>Movimientos laterales:</strong> Arrastra un dedo horizontalmente sobre la galeria.",
+  "navigation-mobile-line2":"<strong>Avanzar/Retroceder:</strong> Haz zoom con dos dedos sobre la galeria.",
+  "navigation-mobile-line3":"<strong>Cambiar de pared:</strong> Utiliza los botones que aparecen al tocar al final de cada pared.",
+  "navigation-mobile-line4":"<strong>Ampliar obra:</strong> Manten pulsada una obra hasta activar el zoom. Haz zoom con los dedos y cierra con el botón de la esquina superior derecha.",
+  "navigation-mobile-line5":"<strong>Ver Cartela:</strong> Pulsa una obra hasta que aparezca la cartela.",
+  "navigation-mobile-line6":"<strong>Iniciar/detener un video:</strong> Manten pulsado el video."
+}
