@@ -1,8 +1,11 @@
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { watch } from 'vue';
 import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
 import store from '../store';
+import WallContent from '../types/WallContent';
+import Frame from '../types/Frame';
+
 
 let player:Plyr;
 const props = defineProps<{
@@ -22,8 +25,8 @@ const { allContents } = store.state;
 const emit = defineEmits<{(e: 'zoomImage', imageUrl: string): void}>();
 
 const contentData = allContents.find((content) => content.id === props.wallContent.contentId);
-const rootUrl:String = `/storage/${store.state.metadata.alias}/`;
-let isFramed:boolean = false; let frameWidthPx:number = 0; let matWidthPx:number = 0;
+const rootUrl = `/storage/${store.state.metadata.alias}/`;
+let isFramed = false; let frameWidthPx = 0; let matWidthPx = 0;
 let contentFrame:Frame = {
   frameWidth: 0,
   matWidth: 0,
@@ -44,7 +47,7 @@ const totalHeightPx = (props.wallContent.height / 100) * props.pxPerMeter + matW
 const totalTopPx = (props.wallContent.top / 100) * props.pxPerMeter - frameWidthPx - matWidthPx;
 const totalLeftPx = (props.wallContent.left / 100) * props.pxPerMeter - frameWidthPx - matWidthPx;
 
-let contentShadowCSS:string = 'none';
+let contentShadowCSS = 'none';
 if (props.wallContent.shadow !== undefined) {
   contentShadowCSS = `${(props.wallContent.shadow.hShadow / 100) * props.pxPerMeter}px
     ${(props.wallContent.shadow.vShadow / 100) * props.pxPerMeter}px
@@ -87,39 +90,47 @@ function longPressReset() {
 
 </script>
 <template>
-  <div  :id="wallContent.contentId"
-        @click="clickContent($event)"
-        @touchstart="longPressContent()"
-        @touchend="longPressReset"
-        :class="{'framed':isFramed,
-                'disabled-content': wallContent.disable,
-                'video-content': wallContent.type === 'video',
-                'wall-content':true}"
-        :style="`top:${totalTopPx}px;
+  <div
+    :id="wallContent.contentId"
+    :class="{'framed':isFramed,
+             'disabled-content': wallContent.disable,
+             'video-content': wallContent.type === 'video',
+             'wall-content':true}"
+    :style="`top:${totalTopPx}px;
                 left:${totalLeftPx}px;
                 width:${totalWidthPx}px;
                 height:${totalHeightPx}px;
                 border-width:${frameWidthPx}px;
                 border-color:${contentFrame.frameColor};
                 border-image-source:${contentFrame.frameImageUrl};
-                box-shadow:${contentShadowCSS}`">
-      <div :class="contentFrame.isGlassed?'glass-frame':'no-glass'">
-        <div class="mat-frame"
-          :style="`box-shadow: inset 0 0 0 ${matWidthPx}px ${contentFrame.matColor};`" >
-          <div v-if="wallContent.type === 'video'"
-              :id="`player-${wallContent.contentId}`"
-              :data-plyr-provider="contentData?.video?.source"
-              :data-plyr-embed-id="contentData?.video?.id"></div>
-          <img v-else
-            :alt="contentData?.name"
-            class="image-content"
-            :src="contentData?.file?.url"
-            :style="`top:${matWidthPx}px;
+                box-shadow:${contentShadowCSS}`"
+    @click="clickContent($event)"
+    @touchstart="longPressContent()"
+    @touchend="longPressReset"
+  >
+    <div :class="contentFrame.isGlassed?'glass-frame':'no-glass'">
+      <div
+        class="mat-frame"
+        :style="`box-shadow: inset 0 0 0 ${matWidthPx}px ${contentFrame.matColor};`"
+      >
+        <div
+          v-if="wallContent.type === 'video'"
+          :id="`player-${wallContent.contentId}`"
+          :data-plyr-provider="contentData?.video?.source"
+          :data-plyr-embed-id="contentData?.video?.id"
+        />
+        <img
+          v-else
+          :alt="contentData?.name"
+          class="image-content"
+          :src="contentData?.file?.url"
+          :style="`top:${matWidthPx}px;
                     left:${matWidthPx}px;
                     width:${(wallContent.width / 100) * props.pxPerMeter}px;
-                    height:${(wallContent.height / 100) * props.pxPerMeter}px;`"/>
-        </div>
+                    height:${(wallContent.height / 100) * props.pxPerMeter}px;`"
+        >
       </div>
+    </div>
   </div>
 </template>
 

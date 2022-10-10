@@ -1,8 +1,15 @@
 <template>
-    <div>
-      <canvas v-show="roomVertex.length>1" v-if="canvasId" :id="canvasId" width="150" height="150">
-        Your browser does not support the HTML5 canvas tag.</canvas>
-    </div>
+  <div>
+    <canvas
+      v-show="roomVertex.length > 1"
+      v-if="canvasId"
+      :id="canvasId"
+      width="150"
+      height="150"
+      style="transform: rotateZ(90deg)"
+    >
+      Your browser does not support the HTML5 canvas tag.</canvas>
+  </div>
 </template>
 
 <script>
@@ -20,7 +27,7 @@ export default {
     color: {
       type: String,
       required: false,
-      default: 'black',
+      default: "black",
     },
   },
   data() {
@@ -35,14 +42,13 @@ export default {
     activeWallIndex() {
       this.drawMap();
     },
-
   },
   created() {
     function uuidv4() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
         // eslint-disable-next-line no-bitwise
-        const r = Math.random() * 16 | 0; const
-          v = c === 'x' ? r : (r & 0x3 | 0x8);
+        const r = (Math.random() * 16) | 0;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       });
     }
@@ -51,15 +57,14 @@ export default {
   mounted() {
     this.drawMap();
   },
-  destroyed() {
-
-  },
   methods: {
     drawMap() {
-      let minX = 0; let maxX = 0; let minY = 0; let
-        maxY = 0;
+      let minX = 0;
+      let maxX = 0;
+      let minY = 0;
+      let maxY = 0;
       const canvas = document.getElementById(this.canvasId);
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       this.roomVertex.forEach((point) => {
@@ -80,7 +85,8 @@ export default {
 
       // ctx.beginPath();
       let i = 0;
-      let x0 = 0; let y0 = 0;
+      let x0 = 0;
+      let y0 = 0;
       this.roomVertex.forEach((point) => {
         ctx.beginPath();
         ctx.moveTo(x0 + borderX, y0 + borderY);
@@ -90,7 +96,7 @@ export default {
         ctx.strokeStyle = this.color;
         if (i - 1 === this.activeWallIndex) {
           ctx.lineWidth = 5;
-          ctx.strokeStyle = '#009688';
+          ctx.strokeStyle = "#009688";
         }
         ctx.lineTo(x, y);
         ctx.stroke();
@@ -102,7 +108,7 @@ export default {
       ctx.moveTo(x0 + borderX, y0 + borderY);
       if (this.roomVertex.length === this.activeWallIndex + 1) {
         ctx.lineWidth = 5;
-        ctx.strokeStyle = '#009688';
+        ctx.strokeStyle = "#009688";
       } else {
         ctx.lineWidth = 1;
         ctx.strokeStyle = this.color;
@@ -112,9 +118,6 @@ export default {
     },
   },
 };
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

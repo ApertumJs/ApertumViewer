@@ -4,6 +4,7 @@
     ],
     "i18n-ally.keystyle": "nested",
     "i18n-ally.extract.autoDetect": false,
-    "i18n-ally.sourceLanguage": "en"
+    "i18n-ally.sourceLanguage": "en",
+    "vue3snippets.enable-compile-vue-file-on-did-save-code": false
 
 }

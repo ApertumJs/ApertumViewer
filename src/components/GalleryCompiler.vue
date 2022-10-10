@@ -9,6 +9,7 @@ import { useI18n } from 'vue-i18n';
 import store from '../store';
 import wallContent from './WallContent.vue';
 import galleryMap from './GalleryMap.vue';
+import {Navigation,Point} from '../types/Navigation'
 
 const { t } = useI18n();
 
@@ -18,6 +19,7 @@ const isMobile = (navigator.maxTouchPoints > 0);
 const {
   metadata, allContents, room, serverUrl,
 } = store.state;
+
 const { resolutionQuality } = room.options;
 const { initialZoom } = room.options;
 let initialTouchDist:number;
@@ -147,7 +149,6 @@ function calculateInterval(viewerNewPosition:number[]) {
   const module = Math.sqrt(deltaX ** 2 + deltaZ ** 2);
   return module / pxPerSecond;
 }
-
 function playRoomAudio() {
   if (!room.generalAudio) return;
   let audioUrl:string|null = null;
@@ -162,7 +163,6 @@ function playRoomAudio() {
     roomAudio.autoplay = true;
   }
 }
-
 function playWallAudio(indexWall:number = activeWall.value) {
   if (wallAudio) {
     wallAudio.pause();
@@ -181,11 +181,11 @@ function playWallAudio(indexWall:number = activeWall.value) {
   }
 }
 
-function moveToWall(indexWall:number, deltaIndex:number = 0) {
+function moveToWall(indexWall:number, deltaIndex = 0) {
   const d = 2 * (resolutionQuality / initialZoom); // min dance from wall corner in metres
   let fistPositionDistance:number;
   const viewerNewPosition:number[] = [];
-  let viewerNewAngleDeg:number = 0;
+  let viewerNewAngleDeg = 0;
   let interval:number;
   let nextWallIndex:number = indexWall + deltaIndex;
   if (nextWallIndex < 0) nextWallIndex = wallProperties.length - 1;
@@ -325,6 +325,7 @@ function closeFullScreen() {
 
 function openGallery() {
   playRoomAudio();
+  playWallAudio();
   showGalleryInfo.value = false;
 }
 
@@ -336,182 +337,319 @@ window.addEventListener('resize', getwallProperties);
 
 </script>
 <template>
-<div>
-   <div id="scene" :style="`perspective:${perspective}px;background-color:${room.colors.ceiling}`"
-    @mousedown.prevent="sceneMouseDown($event)"
-    @mousemove.prevent="sceneMouseMove($event)"
-    @mouseup.prevent="sceneMouseUp()"
-    @wheel.prevent="sceneMouseWheel($event)"
-    @touchstart.prevent="sceneTouchStart($event)"
-    @touchmove.prevent="sceneTouchZoom($event)">
-    <div id="floor" :style="`background-color:${room.colors.floor}`"></div>
-    <div id="viewer"
-      :style="`top:${viewerTop}px;
+  <div>
+    <div
+      id="scene"
+      :style="`perspective:${perspective}px;background-color:${room.colors.ceiling}`"
+      @mousedown.prevent="sceneMouseDown($event)"
+      @mousemove.prevent="sceneMouseMove($event)"
+      @mouseup.prevent="sceneMouseUp()"
+      @wheel.prevent="sceneMouseWheel($event)"
+      @touchstart.prevent="sceneTouchStart($event)"
+      @touchmove.prevent="sceneTouchZoom($event)"
+    >
+      <div
+        id="floor"
+        :style="`background-color:${room.colors.floor}`"
+      />
+      <div
+        id="viewer"
+        :style="`top:${viewerTop}px;
         transition-duration:${viewerNav.transitionDuration}s;
-        transform:translate3d(${-viewerLeft}px, 0, ${-viewerNav.positionZ+perspective}px)`">
-        <div id="room"
+        transform:translate3d(${-viewerLeft}px, 0, ${-viewerNav.positionZ+perspective}px)`"
+      >
+        <div
+          id="room"
           :style="`transform-origin: ${viewerNav.positionX}px 0 ${viewerNav.positionZ}px;
                   transform:rotateY(${viewerNav.angleDeg}deg);
-                  transition-duration:${viewerNav.transitionDuration}s`">
-          <div id="viewerRef"
-            :style="`transform:translate3d(${viewerNav.positionX}px,0,${viewerNav.positionZ}px)`"/>
-          <figure v-for="(wall, indexWall) in wallProperties" :key="'wall-'+ indexWall"
+                  transition-duration:${viewerNav.transitionDuration}s`"
+        >
+          <div
+            id="viewerRef"
+            :style="`transform:translate3d(${viewerNav.positionX}px,0,${viewerNav.positionZ}px)`"
+          />
+          <figure
+            v-for="(wall, indexWall) in wallProperties"
             :id="'wall-'+indexWall"
+            :key="'wall-'+ indexWall"
             class="wall"
             :style="`width:${wall.widthPx}px; height:${wall.heightPx}px;
                     transform-origin: ${wall.positionX}px 0 ${wall.positionZ}px;
                     transform:rotateY(${wall.angleDeg}deg)
                     translate3d(${wall.positionX}px, 0, ${wall.positionZ}px);
-                    background-color:${wall.color}`">
-            <div class='absolute-left move-wall-area'
-              @touchstart="setOpacity($event,'1')" @touchend="setOpacity($event,'0')">
-              <div class="absolute-left move-wall"
+                    background-color:${wall.color}`"
+          >
+            <div
+              class="absolute-left move-wall-area"
+              @touchstart="setOpacity($event,'1')"
+              @touchend="setOpacity($event,'0')"
+            >
+              <div
+                class="absolute-left move-wall"
                 @click="moveToWall(indexWall,-1)"
-                @touchstart="moveToWall(indexWall,-1)">
-                  <ion-icon name="arrow-undo-outline" size="large"/>
+                @touchstart="moveToWall(indexWall,-1)"
+              >
+                <ion-icon
+                  name="arrow-undo-outline"
+                  size="large"
+                />
               </div>
             </div>
-            <div class='absolute-right move-wall-area'
-              @touchstart="setOpacity($event,'1')" @touchend="setOpacity($event,'0')">
-              <div class="absolute-right move-wall"
+            <div
+              class="absolute-right move-wall-area"
+              @touchstart="setOpacity($event,'1')"
+              @touchend="setOpacity($event,'0')"
+            >
+              <div
+                class="absolute-right move-wall"
                 @click="moveToWall(indexWall,1)"
-                @touchstart="moveToWall(indexWall,1)">
-                  <ion-icon name="arrow-redo-outline" size="large"/>
+                @touchstart="moveToWall(indexWall,1)"
+              >
+                <ion-icon
+                  name="arrow-redo-outline"
+                  size="large"
+                />
               </div>
             </div>
-            <div v-if="wall.backgroundImage" class="wall-background"
-              :style="`background-image:url('${wall.backgroundImage}')`"></div>
-            <wall-content  v-for="(wallContent,key) in room.walls[indexWall].contents" :key="key"
-              :pxPerMeter="pxPerMeter" :wallContent="wallContent"
-              :index-wall="indexWall" :active-wall="activeWall"
-              @zoomImage="zoomImage"
-              @mouseenter="activeContentId=wallContent.contentId"
+            <div
+              v-if="wall.backgroundImage"
+              class="wall-background"
+              :style="`background-image:url('${wall.backgroundImage}')`"
+            />
+            <wall-content
+              v-for="(content,key) in room.walls[indexWall].contents"
+              :key="key"
+              :px-per-meter="pxPerMeter"
+              :wall-content="content"
+              :index-wall="indexWall"
+              :active-wall="activeWall"
+              @zoom-image="zoomImage"
+              @mouseenter="activeContentId=content.contentId"
               @mouseleave="activeContentId=null"
-              @touchstart="setActiveContentId(wallContent.contentId)"/>
+              @touchstart="setActiveContentId(content.contentId)"
+            />
           </figure>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- Info panels -->
-   <div id="wall-info" class="z-top" v-show="!activeContentId">
-      <div >
-       <gallery-map :roomVertex="roomVertex" :activeWallIndex="activeWall"></gallery-map>
-       <strong>{{t('wall')}}: {{activeWall + 1}} / {{room.walls.length}}</strong>
+    <!-- Info panels -->
+    <div
+      v-show="!activeContentId"
+      id="wall-info"
+      class="z-top"
+    >
+      <div>
+        <gallery-map
+          :room-vertex="roomVertex"
+          :active-wall-index="activeWall"
+        />
+        <strong>{{ t('wall') }}: {{ activeWall + 1 }} / {{ room.walls.length }}</strong>
       </div>
-  </div>
-  <div id="content-info" class="z-top" v-show="activeContentId"
-      @touchstart="activeContentId=null">
+    </div>
+    <div
+      v-show="activeContentId"
+      id="content-info"
+      class="z-top"
+      @touchstart="activeContentId=null"
+    >
       <div class="content-info-header">
-        {{activeContent.name}}
+        {{ activeContent.name }}
       </div>
       <div class="content-info-body">
-        <span v-html="activeContent.info"></span>
-        {{activeContent.dimensions}}
+        {{ activeContent.info }}
+        {{ activeContent.dimensions }}
       </div>
-  </div>
-  <!-- Tools panel -->
-  <div id="tools-panel" class="">
-        <ion-icon name="document-outline"
-        @click="showGalleryInfo=true" @touchstart="showGalleryInfo=true"></ion-icon>
-        <ion-icon v-if="mutedAudio" name="volume-mute-outline"
-        @click="volumenMute" @touchstart="volumenMute"></ion-icon>
-       <ion-icon v-else name="volume-high-outline"
-        @click="volumenMute" @touchstart="volumenMute"></ion-icon>
-        <ion-icon name="share-social-outline"
-        @click="showSharePanel=true" @touchstart="showSharePanel=true"></ion-icon>
-        <ion-icon v-if="!fullScreenIsActive" name="expand-outline"
-        @click="openFullScreen" @touchstart="openFullScreen"></ion-icon>
-        <ion-icon v-else name="contract-outline"
-        @click="closeFullScreen" @touchstart="closeFullScreen"></ion-icon>
-        <ion-icon name="information-circle-outline"
-        @click="showHelpPanel=true" @touchstart="showHelpPanel=true"></ion-icon>
-  </div>
-  <!-- Overlays -->
-  <div id="overlay-zoom" class="overlay z-top"  v-show="showImageZoom">
-    <div  class="z-top close-icon"
-      @click="showImageZoom=!showImageZoom" @touchstart="showImageZoom=!showImageZoom">
-      <ion-icon name="close-outline" ></ion-icon>
     </div>
-    <div id="zoom-img"></div>
-  </div>
-  <div id="overlay-gallery-info" class="overlay z-top"  v-show="showGalleryInfo">
-    <div id="container-gallery-info">
-      <div id="avatar" class="gallery-info-box">
-        <img :src="avatarUrl">
+    <!-- Tools panel -->
+    <div
+      id="tools-panel"
+      class=""
+    >
+      <ion-icon
+        name="document-outline"
+        @click="showGalleryInfo=true"
+        @touchstart="showGalleryInfo=true"
+      />
+      <ion-icon
+        v-if="mutedAudio"
+        name="volume-mute-outline"
+        @click="volumenMute"
+        @touchstart="volumenMute"
+      />
+      <ion-icon
+        v-else
+        name="volume-high-outline"
+        @click="volumenMute"
+        @touchstart="volumenMute"
+      />
+      <ion-icon
+        name="share-social-outline"
+        @click="showSharePanel=true"
+        @touchstart="showSharePanel=true"
+      />
+      <ion-icon
+        v-if="!fullScreenIsActive"
+        name="expand-outline"
+        @click="openFullScreen"
+        @touchstart="openFullScreen"
+      />
+      <ion-icon
+        v-else
+        name="contract-outline"
+        @click="closeFullScreen"
+        @touchstart="closeFullScreen"
+      />
+      <ion-icon
+        name="information-circle-outline"
+        @click="showHelpPanel=true"
+        @touchstart="showHelpPanel=true"
+      />
+    </div>
+    <!-- Overlays -->
+    <div
+      v-show="showImageZoom"
+      id="overlay-zoom"
+      class="overlay z-top"
+    >
+      <div
+        class="z-top close-icon"
+        @click="showImageZoom=!showImageZoom"
+        @touchstart="showImageZoom=!showImageZoom"
+      >
+        <ion-icon name="close-outline" />
       </div>
-      <div class="gallery-info-box">
-        <div id="gallery-info-header">
-            <span id="gallery-date">{{dateCreatedGallery}}</span>
-          <span id="gallery-name">{{metadata.name}}</span>
-          <div id="gallery-enter-bottom"
-            @click="openGallery()"
-            @touchstart="openGallery()">
-            <span>{{t('gallery-enter')}}</span>
-            <ion-icon name="enter-outline" size="large"></ion-icon>
+      <div id="zoom-img" />
+    </div>
+    <div
+      v-show="showGalleryInfo"
+      id="overlay-gallery-info"
+      class="overlay z-top"
+    >
+      <div id="container-gallery-info">
+        <div
+          id="avatar"
+          class="gallery-info-box"
+        >
+          <img :src="avatarUrl">
+        </div>
+        <div class="gallery-info-box">
+          <div id="gallery-info-header">
+            <span id="gallery-date">{{ dateCreatedGallery }}</span>
+            <span id="gallery-name">{{ metadata.name }}</span>
+            <div
+              id="gallery-enter-bottom"
+              @click="openGallery()"
+              @touchstart="openGallery()"
+            >
+              <span>{{ t('gallery-enter') }}</span>
+              <ion-icon
+                name="enter-outline"
+                size="large"
+              />
+            </div>
+          </div>
+          <div
+            v-for="(tag,key) in metadata.galleryTags"
+            :key="key"
+            class="gallery-tag"
+          >
+            {{ tag }}
+          </div>
+          <div id="gallery-synopsis">
+            {{ metadata.synopsis }}
+          </div>
+          <div id="gallery-description">
+            {{ metadata.description }}
           </div>
         </div>
-        <div class="gallery-tag" v-for="(tag,key) in metadata.galleryTags" :key="key">
-          {{tag}}
+      </div>
+    </div>
+    <div
+      v-show="showSharePanel"
+      id="overlay-share-panel"
+      class="overlay z-top"
+    >
+      <div
+        class="z-top close-icon"
+        @click="showSharePanel=!showSharePanel"
+        @touchstart="showSharePanel=!showSharePanel"
+      >
+        <ion-icon name="close-outline" />
+      </div>
+      <div
+        id="share-panel"
+        class="text-white"
+      >
+        <h1>{{ t('share-gallery') }}</h1>
+        <h4>{{ t('gallery-link') }}:</h4>
+        <div class="input-box">
+          {{ serverUrl }}/g/{{ metadata.alias }}
         </div>
-        <div id="gallery-synopsis">
-          {{metadata.synopsis}}</div>
-        <div id="gallery-description">
-          <span v-html="metadata.description"></span></div>
+        <h4 class="text-white">
+          {{ t('embed-iframe') }}:
+        </h4>
+        <div class="input-box">
+          {{ iframeText }}
+        </div>
+        <h4> {{ t('social') }}:</h4>
+        <div class="social-icons">
+          <a
+            target="_blank"
+            :href="'https://www.facebook.com/sharer/sharer.php?u=' + encodeURI(serverUrl+'/g/'+ metadata.alias)"
+          >
+            <ion-icon name="logo-facebook" />
+          </a>
+          <a
+            target="_blank"
+            :href="'https://twitter.com/intent/tweet?tw_p=tweetbutton&url='+ encodeURI(serverUrl+'/g/'+ metadata.alias) + '&text=' + encodeURI(metadata.name)"
+          >
+            <ion-icon name="logo-twitter" />
+          </a>
+          <a
+            target="_blank"
+            :href="'http://pinterest.com/pin/create/button/?url=' + encodeURI(serverUrl+'/g/'+ metadata.alias) + '&media=' + avatarUrl+ '&description=' + encodeURI(metadata.name)"
+          >
+            <ion-icon name="logo-pinterest" />
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      v-show="showHelpPanel"
+      id="overlay-help"
+      class="overlay z-top"
+    >
+      <div
+        class="z-top close-icon"
+        @click="showHelpPanel=!showHelpPanel"
+        @touchstart="showHelpPanel=!showHelpPanel"
+      >
+        <ion-icon name="close-outline" />
+      </div>
+      <div
+        id="help-panel"
+        class="text-white"
+      >
+        <h1>{{ t('navigation') }}</h1>
+        <div v-if="!isMobile">
+          <h3>{{ t('navigation-desktop-line1') }}</h3>
+          <h3>{{ t('navigation-desktop-line2') }}</h3>
+          <h3>{{ t('navigation-desktop-line3') }}</h3>
+          <h3>{{ t('navigation-desktop-line4') }}</h3>
+          <h3>{{ t('navigation-desktop-line5') }}</h3>
+          <h3>{{ t('navigation-desktop-line6') }}</h3>
+        </div>
+        <div v-else>
+          <h3>{{ t('navigation-mobile-line1') }}</h3>
+          <h3>{{ t('navigation-mobile-line2') }}</h3>
+          <h3>{{ t('navigation-mobile-line3') }}</h3>
+          <h3>{{ t('navigation-mobile-line4') }}</h3>
+          <h3>{{ t('navigation-mobile-line5') }}</h3>
+          <h3>{{ t('navigation-mobile-line6') }}</h3>
+        </div>
       </div>
     </div>
   </div>
-  <div id="overlay-share-panel" class="overlay z-top" v-show="showSharePanel">
-    <div  class="z-top close-icon"
-        @click="showSharePanel=!showSharePanel" @touchstart="showSharePanel=!showSharePanel">
-        <ion-icon name="close-outline" ></ion-icon>
-    </div>
-    <div id="share-panel" class="text-white">
-      <h1>{{t('share-gallery')}}</h1>
-      <h4>{{t('gallery-link')}}:</h4>
-      <div class="input-box">{{serverUrl}}/g/{{metadata.alias}}</div>
-      <h4 class="text-white"> {{t('embed-iframe')}}:</h4>
-      <div class="input-box"> {{iframeText}}</div>
-      <h4> {{t('social')}}:</h4>
-      <div class="social-icons" >
-        <a target="_blank" :href="'https://www.facebook.com/sharer/sharer.php?u=' + encodeURI(serverUrl+'/g/'+ metadata.alias)">
-          <ion-icon name="logo-facebook"></ion-icon>
-        </a>
-        <a target="_blank" :href="'https://twitter.com/intent/tweet?tw_p=tweetbutton&url='+ encodeURI(serverUrl+'/g/'+ metadata.alias) + '&text=' + encodeURI(metadata.name)">
-            <ion-icon name="logo-twitter"></ion-icon>
-        </a>
-        <a target="_blank" :href="'http://pinterest.com/pin/create/button/?url=' + encodeURI(serverUrl+'/g/'+ metadata.alias) + '&media=' + avatarUrl+ '&description=' + encodeURI(metadata.name)">
-            <ion-icon name="logo-pinterest"></ion-icon>
-        </a>
-      </div>
-    </div>
-  </div>
-  <div id="overlay-help" class="overlay z-top" v-show="showHelpPanel">
-    <div  class="z-top close-icon"
-        @click="showHelpPanel=!showHelpPanel" @touchstart="showHelpPanel=!showHelpPanel">
-        <ion-icon name="close-outline" ></ion-icon>
-    </div>
-    <div id="help-panel" class="text-white">
-      <h1>{{t('navigation')}}</h1>
-      <div v-if="!isMobile">
-        <h3 v-html="t('navigation-desktop-line1')"></h3>
-        <h3 v-html="t('navigation-desktop-line2')"></h3>
-        <h3 v-html="t('navigation-desktop-line3')"></h3>
-        <h3 v-html="t('navigation-desktop-line4')"></h3>
-        <h3 v-html="t('navigation-desktop-line5')"></h3>
-        <h3 v-html="t('navigation-desktop-line6')"></h3>
-      </div>
-      <div v-else>
-        <h3 v-html="t('navigation-mobile-line1')"></h3>
-        <h3 v-html="t('navigation-mobile-line2')"></h3>
-        <h3 v-html="t('navigation-mobile-line3')"></h3>
-        <h3 v-html="t('navigation-mobile-line4')"></h3>
-        <h3 v-html="t('navigation-mobile-line5')"></h3>
-        <h3 v-html="t('navigation-mobile-line6')"></h3>
-      </div>
-    </div>
-  </div>
-</div>
-
 </template>
 
 <style scoped>

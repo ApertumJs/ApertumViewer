@@ -1,6 +1,8 @@
 import { reactive, readonly } from 'vue';
-import './interfaces.ts';
 import config from '../config.json';
+import ContentData from '../types/ContentData';
+import GalleryData from '../types/GalleryData';
+import Room from '../types/Room';
 
 const state = reactive({
   metadata: <GalleryData> {},

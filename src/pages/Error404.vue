@@ -4,13 +4,15 @@ export default {
 };
 </script>
 <template>
-<div id="page-body">
-  <div style="font-size: 20vh">404 Error</div>
-  <div style="font-size: 10vh;opacity:.4">
-    Oops. Nothing here...
+  <div id="page-body">
+    <div style="font-size: 20vh">
+      404 Error
+    </div>
+    <div style="font-size: 10vh;opacity:.4">
+      Oops. Nothing here...
+    </div>
+    <img src="../assets/logo.png">
   </div>
-  <img  src="../assets/logo.png"/>
-</div>
 </template>
 
 <style scoped>

@@ -7,5 +7,5 @@ store.mutations.readFileData(props.idGallery);
 </script>
 
 <template>
-<gallery-compiler v-if="store.state.galleryIsReady"></gallery-compiler>
+  <gallery-compiler v-if="store.state.galleryIsReady" />
 </template>

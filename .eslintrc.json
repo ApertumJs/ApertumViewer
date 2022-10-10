@@ -4,8 +4,9 @@
         "es2021": true
     },
     "extends": [
-        "plugin:vue/essential",
-        "airbnb-base"
+        "plugin:vue/vue3-recommended",
+        "eslint:recommended",
+        "@vue/typescript/recommended"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
@@ -17,13 +18,13 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "no-console": "warn", 
-        "no-use-before-define": "warn", 
-        "spaced-comment": "warn",
-        "linebreak-style": 0,
-        "import/no-unresolved": 0,
-        "no-undef":0,
-        "import/extensions": 0,
-        "no-unused-vars": 0
+        "no-console": "warn"
+        // "no-use-before-define": "warn", 
+        // "spaced-comment": "warn",
+        // "linebreak-style": 0,
+        // "import/no-unresolved": 0,
+        // "no-undef":0,
+        // "import/extensions": 0,
+        // "no-unused-vars": 0
     }
 }
